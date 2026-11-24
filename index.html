@@ -1,6 +1,130 @@
 
 <!DOCTYPE html>
-<html <script>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CHARUTHA GPS Dashboard</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #020b08;
+  color: #00ff88;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  padding: 20px;
+  text-align: center;
+  background: #001b12;
+  border-bottom: 1px solid #00ff88;
+}
+
+h2 {
+  margin: 0;
+  text-shadow: 0 0 10px #00ff88;
+}
+
+.panel {
+  padding: 15px;
+  background: #03150f;
+}
+
+.status {
+  padding: 12px;
+  border: 1px solid #00ff88;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.info div {
+  background: #06251a;
+  padding: 12px;
+  border: 1px solid #075d3c;
+  overflow-wrap: anywhere;
+}
+
+button {
+  padding: 12px 20px;
+  margin: 8px 4px;
+  border: 1px solid #00ff88;
+  background: #003b25;
+  color: #00ff88;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+button:active {
+  background: #00ff88;
+  color: black;
+}
+
+#map {
+  height: 55vh;
+  min-height: 300px;
+  width: 100%;
+  border-top: 2px solid #00ff88;
+}
+
+footer {
+  text-align: center;
+  padding: 12px;
+  color: #00ff88;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>CHARUTHA GPS</h2>
+  <p>GLOBAL TRACKING DASHBOARD</p>
+</header>
+
+<div class="panel">
+
+  <div class="status" id="status">
+    SYSTEM READY
+  </div>
+
+  <div class="info">
+    <div>GPS: <span id="gps">OFF</span></div>
+    <div>Accuracy: <span id="accuracy">--</span></div>
+    <div>Latitude: <span id="lat">--</span></div>
+    <div>Longitude: <span id="lng">--</span></div>
+  </div>
+
+  <center>
+    <button onclick="startGPS()">START GPS</button>
+    <button onclick="stopGPS()">STOP GPS</button>
+  </center>
+
+</div>
+
+<div id="map"></div>
+
+<footer>
+  CHARUTHA GPS SYSTEM | AUTHORIZED DEVICE ONLY
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
 
 const map = L.map('map').setView([7.8731, 80.7718], 7);
 
@@ -35,6 +159,7 @@ function startGPS() {
 
       document.getElementById("lat").innerText = lat;
       document.getElementById("lng").innerText = lng;
+
       document.getElementById("accuracy").innerText =
         Math.round(accuracy) + " meters";
 
@@ -42,17 +167,22 @@ function startGPS() {
       document.getElementById("status").innerText = "CONNECTED";
 
       if (marker) {
+
         marker.setLatLng([lat, lng]);
         circle.setLatLng([lat, lng]);
         circle.setRadius(accuracy);
+
       } else {
+
         marker = L.marker([lat, lng]).addTo(map)
-          .bindPopup("My Authorized Device").openPopup();
+          .bindPopup("My Authorized Device")
+          .openPopup();
 
         circle = L.circle([lat, lng], {
           radius: accuracy,
           color: "#00ff88"
         }).addTo(map);
+
       }
 
       map.setView([lat, lng], 16);
@@ -60,8 +190,10 @@ function startGPS() {
     },
 
     function(error) {
+
       document.getElementById("status").innerText =
         "GPS ERROR: " + error.message;
+
     },
 
     {
@@ -69,14 +201,17 @@ function startGPS() {
       maximumAge: 0,
       timeout: 15000
     }
+
   );
 }
 
 function stopGPS() {
 
   if (watchID !== null) {
+
     navigator.geolocation.clearWatch(watchID);
     watchID = null;
+
   }
 
   document.getElementById("gps").innerText = "OFF";
@@ -84,5 +219,6 @@ function stopGPS() {
 }
 
 </script>
+
 </body>
 </html>
